@@ -1,0 +1,14 @@
+<div class="game-container">
+  <h2>2048 Game</h2>
+  <p>Score: {{ score }}</p>
+  <div class="board">
+    <div *ngFor="let row of board" class="row">
+      <div *ngFor="let cell of row" class="tile" [ngClass]="'tile-' + cell">
+        {{ cell !== 0 ? cell : '' }}
+      </div>
+    </div>
+  </div>
+
+  <app-moves [count]="moves"></app-moves>
+
+</div>
