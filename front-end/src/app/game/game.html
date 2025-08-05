@@ -1,14 +1,23 @@
-<div class="game-container">
-  <h2>2048 Game</h2>
-  <p>Score: {{ score }}</p>
-  <div class="board">
-    <div *ngFor="let row of board" class="row">
-      <div *ngFor="let cell of row" class="tile" [ngClass]="'tile-' + cell">
-        {{ cell !== 0 ? cell : '' }}
+<div class="min-h-screen bg-black text-white flex items-center justify-center px-4 py-10">
+  <div class="w-full max-w-2xl space-y-6">
+    <h2 class="text-4xl font-bold text-center">2048 Game</h2>
+    <p class="text-center text-xl text-gray-300">
+      Score: <span class="font-bold text-white">{{ score }}</span>
+    </p>
+
+    <!-- Game Board -->
+<div class="grid grid-rows-4 gap-4 bg-gradient-to-br from-purple-900 to-black p-4 rounded-3xl shadow-xl border-10 border-white">
+      <div *ngFor="let row of board" class="grid grid-cols-4 gap-4">
+        <div
+          *ngFor="let cell of row"
+          class="flex items-center justify-center h-24 sm:h-28 rounded-xl text-3xl font-bold transform transition-all duration-300 ease-in-out scale-100"
+          [ngClass]="getTileClass(cell)"
+        >
+          {{ cell !== 0 ? cell : '' }}
+        </div>
       </div>
     </div>
+
+    <app-moves [count]="moves"></app-moves>
   </div>
-
-  <app-moves [count]="moves"></app-moves>
-
 </div>

@@ -126,4 +126,20 @@ export class GameComponent implements OnInit {
 
     this.board = newBoard;
   }
+
+
+
+  getTileClass(value: number): string {
+  if (value === 0) return 'bg-black text-white';
+  if (value === 2) return 'bg-purple-100 text-black';
+  if (value === 4) return 'bg-purple-200 text-black';
+  if (value === 8) return 'bg-purple-300 text-black';
+  if (value === 16) return 'bg-purple-400 text-white';
+  if (value === 32) return 'bg-purple-500 text-white';
+  if (value === 64) return 'bg-purple-600 text-white';
+  if (value === 128) return 'bg-purple-700 text-white';
+  if (value === 256) return 'bg-purple-800 text-white';
+  return 'bg-purple-900 text-white';
+}
+
 }
