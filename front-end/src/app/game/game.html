@@ -1,23 +1,32 @@
+<!-- game.html -->
 <div class="min-h-screen bg-black text-white flex items-center justify-center px-4 py-10">
-  <div class="w-full max-w-2xl space-y-6">
+  <div class="w-full max-w-6xl space-y-6">
     <h2 class="text-4xl font-bold text-center">2048 Game</h2>
     <p class="text-center text-xl text-gray-300">
       Score: <span class="font-bold text-white">{{ score }}</span>
     </p>
 
-    <!-- Game Board -->
-<div class="grid grid-rows-4 gap-4 bg-gradient-to-br from-purple-900 to-black p-4 rounded-3xl shadow-xl border-10 border-white">
-      <div *ngFor="let row of board" class="grid grid-cols-4 gap-4">
-        <div
-          *ngFor="let cell of row"
-          class="flex items-center justify-center h-24 sm:h-28 rounded-xl text-3xl font-bold transform transition-all duration-300 ease-in-out scale-100"
-          [ngClass]="getTileClass(cell)"
-        >
-          {{ cell !== 0 ? cell : '' }}
+    <div class="grid grid-cols-1 lg:grid-cols-2 gap-1">
+      <!-- Game Board -->
+      <div class="flex flex-col mx-4	">
+        <div class="grid grid-rows-4 gap-4 bg-gradient-to-br from-purple-900 to-black p-4 rounded-3xl shadow-xl border-4 border-white">
+          <div *ngFor="let row of board" class="grid grid-cols-4 gap-4">
+            <div
+              *ngFor="let cell of row"
+              class="flex items-center justify-center h-24 sm:h-28 rounded-xl text-3xl font-bold transform transition-all duration-300 ease-in-out scale-100"
+              [ngClass]="getTileClass(cell)"
+            >
+              {{ cell !== 0 ? cell : '' }}
+            </div>
+          </div>
         </div>
+        <p class="text-center text-gray-400 mt-4">Use arrow keys to play</p>
+      </div>
+
+      <!-- Moves Table -->
+      <div class="flex flex-col mx-4 ">
+        <app-moves class="flex-1 w-full"  [count]="moves" [moves]="moveHistory"></app-moves>
       </div>
     </div>
-
-    <app-moves [count]="moves"></app-moves>
   </div>
 </div>

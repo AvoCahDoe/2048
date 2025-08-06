@@ -1,12 +1,12 @@
-import { Moves } from './../moves/moves';
+// game.ts
+import { Moves, Move } from './../moves/moves';
 import { Component, HostListener, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-
 @Component({
   selector: 'app-game',
-  standalone:true,
-  imports: [CommonModule,Moves],
+  standalone: true,
+  imports: [CommonModule, Moves],
   templateUrl: './game.html',
   styleUrls: ['./game.scss']
 })
@@ -14,8 +14,9 @@ export class GameComponent implements OnInit {
   gridSize = 4;
   board: number[][] = [];
   score = 0;
-
   moves = 0;
+  moveHistory: Move[] = [];
+
   ngOnInit(): void {
     this.initBoard();
   }
@@ -46,25 +47,41 @@ export class GameComponent implements OnInit {
   @HostListener('window:keydown', ['$event'])
   handleKey(event: KeyboardEvent): void {
     let moved = false;
+    let direction = '';
+    const previousScore = this.score;
 
     switch (event.key) {
       case 'ArrowLeft':
         moved = this.moveLeft();
+        direction = 'Left';
         break;
       case 'ArrowRight':
         moved = this.moveRight();
+        direction = 'Right';
         break;
       case 'ArrowUp':
         moved = this.moveUp();
+        direction = 'Up';
         break;
       case 'ArrowDown':
         moved = this.moveDown();
+        direction = 'Down';
         break;
     }
 
     if (moved) {
       this.addRandomTile();
       this.moves++;
+
+      const scoreGained = this.score - previousScore;
+      const move: Move = {
+        moveNumber: this.moves,
+        direction: direction,
+        scoreGained: scoreGained,
+        timestamp: new Date()
+      };
+
+      this.moveHistory.push(move); // Add to end for chronological order
     }
   }
 
@@ -108,38 +125,30 @@ export class GameComponent implements OnInit {
     return moved;
   }
 
-
-
-
-
-
   transpose(): void {
-         const newBoard = Array.from({ length: this.gridSize }, () =>
+    const newBoard = Array.from({ length: this.gridSize }, () =>
       Array(this.gridSize).fill(0)
     );
 
     for (let i = 0; i < this.gridSize; i++) {
       for (let j = 0; j < this.gridSize; j++) {
-         newBoard[i][j] = this.board[j][i];
+        newBoard[i][j] = this.board[j][i];
       }
     }
 
     this.board = newBoard;
   }
 
-
-
   getTileClass(value: number): string {
-  if (value === 0) return 'bg-black text-white';
-  if (value === 2) return 'bg-purple-100 text-black';
-  if (value === 4) return 'bg-purple-200 text-black';
-  if (value === 8) return 'bg-purple-300 text-black';
-  if (value === 16) return 'bg-purple-400 text-white';
-  if (value === 32) return 'bg-purple-500 text-white';
-  if (value === 64) return 'bg-purple-600 text-white';
-  if (value === 128) return 'bg-purple-700 text-white';
-  if (value === 256) return 'bg-purple-800 text-white';
-  return 'bg-purple-900 text-white';
-}
-
+    if (value === 0) return 'bg-black text-white';
+    if (value === 2) return 'bg-purple-100 text-black';
+    if (value === 4) return 'bg-purple-200 text-black';
+    if (value === 8) return 'bg-purple-300 text-black';
+    if (value === 16) return 'bg-purple-400 text-white';
+    if (value === 32) return 'bg-purple-500 text-white';
+    if (value === 64) return 'bg-purple-600 text-white';
+    if (value === 128) return 'bg-purple-700 text-white';
+    if (value === 256) return 'bg-purple-800 text-white';
+    return 'bg-purple-900 text-white';
+  }
 }

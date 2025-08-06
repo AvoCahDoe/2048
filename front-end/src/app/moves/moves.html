@@ -1,3 +1,42 @@
-<div class="text-center bg-purple-900 text-white rounded-xl py-4 px-6 shadow-lg text-xl font-semibold border border-purple-700 transition-all duration-300">
-  <p>Moves: {{ count }}</p>
+<!-- moves.html -->
+<div class="bg-purple-900 text-white rounded-xl p-4 shadow-lg border border-purple-700 transition-all duration-300 h-full w-full">
+  <div class="text-center mb-4">
+    <h3 class="text-xl font-semibold">Moves: {{ count }}</h3>
+  </div>
+
+  <div class="max-h-120 overflow-y-auto ">
+    <table class="w-full text-sm">
+      <thead class="sticky top-0 bg-purple-800">
+        <tr>
+          <th class="text-left py-2 px-3 border-b border-purple-600">#</th>
+          <th class="text-left py-2 px-3 border-b border-purple-600">Direction</th>
+          <th class="text-left py-2 px-3 border-b border-purple-600">Score+</th>
+          <th class="text-left py-2 px-3 border-b border-purple-600">Time</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let move of moves; trackBy: trackByMove"
+            class="hover:bg-purple-800/50 transition-colors text-2xl			">
+          <td class="py-2 px-3 border-b border-purple-700/50">{{ move.moveNumber }}</td>
+          <td class="py-2 px-3 border-b border-purple-700/50">
+            <span class="inline-flex items-center">
+              <span [innerHTML]="getDirectionIcon(move.direction)"></span>
+              <span class="ml-2">{{ move.direction }}</span>
+            </span>
+          </td>
+          <td class="py-2 px-3 border-b border-purple-700/50 text-green-400">
+            +{{ move.scoreGained }}
+          </td>
+          <td class="py-2 px-3 border-b border-purple-700/50 text-gray-300">
+            {{ formatTime(move.timestamp) }}
+          </td>
+        </tr>
+        <tr *ngIf="moves.length === 0">
+          <td colspan="4" class="text-center py-4 text-gray-400">
+            No moves yet. Use arrow keys to play!
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
 </div>
