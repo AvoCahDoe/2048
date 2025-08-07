@@ -1,0 +1,63 @@
+<div
+  class="bg-gradient-to-br from-purple-900 to-black p-6 rounded-3xl shadow-xl border-4 border-white"
+>
+  <h3 class="text-2xl font-bold text-white text-center mb-6">Game Controls</h3>
+
+  <!-- Timer Display -->
+  <div class="text-center mb-6">
+    <div class="text-2xl font-mono font-bold text-white mb-2">
+      {{ formatTime(elapsedTime) }}
+    </div>
+    <div class="text-purple-300 text-sm">
+      {{
+        gameState === "playing"
+          ? "Game Time"
+          : gameState === "paused"
+          ? "Paused"
+          : "Ready to Start"
+      }}
+    </div>
+  </div>
+
+  <!-- Control Buttons -->
+  <div class="space-y-4">
+    <button
+      (click)="toggleGame()"
+      [disabled]="gameState === 'ready' && !canStart"
+      class="w-full py-3 px-6 rounded-xl font-bold text-lg transition-all duration-300 transform hover:scale-105"
+      [ngClass]="{
+        'bg-green-600 hover:bg-green-500 text-white':
+          gameState === 'ready' || gameState === 'paused',
+        'bg-yellow-600 hover:bg-yellow-500 text-white': gameState === 'playing',
+        'bg-gray-600 cursor-not-allowed': gameState === 'ready' && !canStart
+      }"
+    >
+      <span class="flex items-center justify-center space-x-2">
+        <span>{{ getButtonIcon() }}</span>
+        <span>{{ getButtonText() }}</span>
+      </span>
+    </button>
+
+    <button
+      (click)="resetGame()"
+      class="w-full py-3 px-6 rounded-xl font-bold text-lg bg-red-600 hover:bg-red-500 text-white transition-all duration-300 transform hover:scale-105"
+    >
+      <span class="flex items-center justify-center space-x-2">
+        <span>🔄</span>
+        <span>Reset Game</span>
+      </span>
+    </button>
+  </div>
+
+  <!-- Game Stats -->
+  <div class="mt-6 grid grid-cols-2 gap-4 text-center">
+    <div class="bg-black/30 rounded-lg p-3">
+      <div class="text-purple-300 text-sm">Best Time</div>
+      <div class="text-white font-bold">{{ formatTime(bestTime) }}</div>
+    </div>
+    <div class="bg-black/30 rounded-lg p-3">
+      <div class="text-purple-300 text-sm">Games</div>
+      <div class="text-white font-bold">{{ gamesPlayed }}</div>
+    </div>
+  </div>
+</div>

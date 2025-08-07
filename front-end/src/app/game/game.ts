@@ -1,3 +1,4 @@
+import { ControlsComponent } from './../controls/controls';
 // game.ts
 import { Moves, Move } from './../moves/moves';
 import { Component, HostListener, OnInit } from '@angular/core';
@@ -6,7 +7,7 @@ import { CommonModule } from '@angular/common';
 @Component({
   selector: 'app-game',
   standalone: true,
-  imports: [CommonModule, Moves],
+  imports: [CommonModule, Moves,ControlsComponent],
   templateUrl: './game.html',
   styleUrls: ['./game.scss']
 })
@@ -151,4 +152,26 @@ export class GameComponent implements OnInit {
     if (value === 256) return 'bg-purple-800 text-white';
     return 'bg-purple-900 text-white';
   }
+
+
+  gameStarted = false;
+gamePaused = false;
+
+handleGameStart() {
+ this.gameStarted = true;
+ this.gamePaused = false;
+}
+
+handleGamePause() {
+ this.gamePaused = true;
+}
+
+handleGameReset() {
+ this.gameStarted = false;
+ this.gamePaused = false;
+ this.initBoard();
+ this.score = 0;
+ this.moves = 0;
+ this.moveHistory = [];
+}
 }
