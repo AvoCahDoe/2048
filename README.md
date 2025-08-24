@@ -72,13 +72,3 @@ ng serve
 ![alt text](./assets/image.png)
 
 
-## 🧠 AI Roadmap
-
-| Phase     | Description                                 | Status         |
-|-----------|---------------------------------------------|----------------|
-| Phase 1   | Manual gameplay                             | ✅ Done         |
-| Phase 2   | Rule-based AI (greedy merging strategy)     | 🛠 In Progress  |
-| Phase 3   | DQN agent (learning over episodes)          | 🔜 Planned      |
-| Phase 4   | AI-vs-AI mode / Auto-training & logging     | 🔜 Planned      |
-
-
