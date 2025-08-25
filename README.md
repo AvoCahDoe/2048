@@ -71,4 +71,8 @@ ng serve
 
 ![alt text](./assets/image.png)
 
+Goal Design : 
+
+![alt text](./assets/imageDes.png)
+
 
