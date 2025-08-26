@@ -1,55 +1,70 @@
-<!-- game.html -->
-<div class="min-h-screen bg-black text-white flex items-center justify-center px-4 py-10">
- <div class="w-full max-w-7xl space-y-6">
-   <h2 class="text-4xl font-bold text-center">2048 Game</h2>
-   <p class="text-center text-xl text-gray-300">
-     Score: <span class="font-bold text-white">{{ score }}</span>
-   </p>
+<div class="fixed inset-0 bg-black text-white flex overflow-hidden">
+  
+  <!-- Left Sidebar: Move History -->
+  <div class="w-80 flex flex-col border-r border-purple-800 bg-purple-900/20">
+    <div class="p-4 border-b border-purple-800">
+      <h3 class="text-xl font-bold text-center">Move History</h3>
+    </div>
+    <div class="flex-1 overflow-hidden">
+      <app-moves class="h-full" [count]="moves" [moves]="moveHistory"></app-moves>
+    </div>
+  </div>
 
+  <!-- Center Area: Game Board + Controls -->
+  <div class="flex-1 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-900/10 to-black">
+    
+    <!-- Compact Game Board - Centered -->
+    <div class="bg-gradient-to-br from-purple-900 to-black p-4 rounded-2xl shadow-2xl border-2 border-white mb-6">
+      <div class="grid grid-rows-4 gap-3" style="width: 400px; height: 400px;">
+        <div *ngFor="let row of board" class="grid grid-cols-4 gap-3">
+          <div
+            *ngFor="let cell of row"
+            class="flex items-center justify-center rounded-lg text-2xl font-bold transform transition-all duration-300 ease-in-out"
+            [ngClass]="getTileClass(cell)"
+            [style.height]="'100%'"
+          >
+            {{ cell !== 0 ? cell : '' }}
+          </div>
+        </div>
+      </div>
+    </div>
 
+    <!-- Controls Panel - Under Board -->
+    <div class="bg-purple-900/80 backdrop-blur-sm rounded-xl p-4 border border-purple-700 w-full max-w-md">
+      <app-controls
+        [canStart]="true"
+        (onStart)="handleGameStart()"
+        (onPause)="handleGamePause()"
+        (onReset)="handleGameReset()">
+      </app-controls>
+    </div>
+  </div>
 
+  <!-- Right Sidebar: Score and Info -->
+  <div class="w-64 flex flex-col border-l border-purple-800 bg-purple-900/20 p-6">
+    <!-- Score Display -->
+    <div class="bg-purple-900/80 rounded-xl p-4 mb-6 border border-purple-700">
+      <h3 class="text-lg font-semibold text-center mb-2">Score</h3>
+      <div class="text-3xl font-bold text-center text-white">{{ score }}</div>
+    </div>
 
+    <!-- Moves Counter -->
+    <div class="bg-purple-900/80 rounded-xl p-4 mb-6 border border-purple-700">
+      <h3 class="text-lg font-semibold text-center mb-2">Moves</h3>
+      <div class="text-3xl font-bold text-center text-white">{{ moves }}</div>
+    </div>
 
-
-
-
-
-
-
-   <div class="grid grid-cols-1 lg:grid-cols-6 gap-6">
-     <!-- Game Board - Takes most space -->
-     <div class="lg:col-span-3 flex flex-col">
-       <div class="grid grid-rows-4 gap-4 bg-gradient-to-br from-purple-900 to-black p-4 rounded-3xl shadow-xl border-4 border-white">
-         <div *ngFor="let row of board" class="grid grid-cols-4 gap-4">
-           <div
-             *ngFor="let cell of row"
-             class="flex items-center justify-center h-24 sm:h-28 rounded-xl text-3xl font-bold transform transition-all duration-300 ease-in-out scale-100"
-             [ngClass]="getTileClass(cell)"
-           >
-             {{ cell !== 0 ? cell : '' }}
-           </div>
-         </div>
-
-
-
-       </div>
-       <p class="text-center text-gray-400 mt-4">Use arrow keys to play</p>
-     </div>
-
-     <!-- Controls - Small -->
-     <div class="lg:col-span-1 flex flex-col">
-       <app-controls
-         [canStart]="true"
-         (onStart)="handleGameStart()"
-         (onPause)="handleGamePause()"
-         (onReset)="handleGameReset()">
-       </app-controls>
-     </div>
-
-     <!-- Moves Table - Stretched -->
-     <div class="lg:col-span-2 flex flex-col">
-       <app-moves class="h-full" [count]="moves" [moves]="moveHistory"></app-moves>
-     </div>
-   </div>
- </div>
+    <!-- Navigation Buttons -->
+    <div class="mt-auto space-y-4">
+      <button class="w-full py-3 rounded-lg bg-purple-700 hover:bg-purple-600 flex items-center justify-center text-white transition-all">
+        <span class="mr-2">🏠</span> Home
+      </button>
+      <button class="w-full py-3 rounded-lg bg-purple-700 hover:bg-purple-600 flex items-center justify-center text-white transition-all">
+        <span class="mr-2">📊</span> Stats
+      </button>
+      <button class="w-full py-3 rounded-lg bg-purple-700 hover:bg-purple-600 flex items-center justify-center text-white transition-all">
+        <span class="mr-2">⚙️</span> Settings
+      </button>
+    </div>
+  </div>
 </div>

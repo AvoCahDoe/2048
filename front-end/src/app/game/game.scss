@@ -1,0 +1,18 @@
+// Ensure proper tile sizing
+// .grid-rows-4 {
+//   height: 400px;
+//   width: 400px;
+// }
+
+// .grid-rows-4 > div {
+//   height: calc(25% - 12px); // Account for gap
+// }
+
+// .grid-cols-4 > div {
+//   width: calc(25% - 12px); // Account for gap
+// }
+
+// Tile styling
+.flex.items-center.justify-center.rounded-lg {
+  aspect-ratio: 1/1;
+}

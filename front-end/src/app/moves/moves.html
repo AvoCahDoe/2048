@@ -1,11 +1,11 @@
 <!-- moves.html -->
-<div class="bg-purple-900 text-white rounded-xl p-4 shadow-lg border border-purple-700 transition-all duration-300 h-full w-full">
+<div class="bg-purple-900 text-white rounded-xl p-2 shadow-lg border border-purple-700 transition-all duration-300 h-full w-full">
   <div class="text-center mb-4">
     <h3 class="text-xl font-semibold">Moves: {{ count }}</h3>
   </div>
 
-  <div class="max-h-120 overflow-y-auto ">
-    <table class="w-full text-sm">
+  <div class="max-h-220 overflow-y-auto  ">
+    <table class="w-full text-xs">
       <thead class="sticky top-0 bg-purple-800">
         <tr>
           <th class="text-left py-2 px-3 border-b border-purple-600">#</th>
@@ -16,7 +16,7 @@
       </thead>
       <tbody>
         <tr *ngFor="let move of moves; trackBy: trackByMove"
-            class="hover:bg-purple-800/50 transition-colors text-2xl			">
+            class="hover:bg-purple-800/50 transition-colors text-base			">
           <td class="py-2 px-3 border-b border-purple-700/50">{{ move.moveNumber }}</td>
           <td class="py-2 px-3 border-b border-purple-700/50">
             <span class="inline-flex items-center">
