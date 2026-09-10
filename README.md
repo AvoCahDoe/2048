@@ -108,25 +108,21 @@ Even short DQN runs beat random (~894) and approach heuristic play with longer t
 
 ---
 
-## Interactive web portal
+## Deploy
+
+| Surface | URL |
+| ------- | --- |
+| Frontend (Vercel) | https://front-end-gules-five.vercel.app |
+| Frontend (Render static) | https://twenty48-lab.onrender.com |
+| API (Render) | https://twenty48-api.onrender.com |
 
 ```bash
-# Terminal 1 — API
-uv run twenty48-api
-
-# Terminal 2 — Angular (proxies /api → :8000)
-cd front-end && npm start
+# API (Render free) — auto-deploys from main
+# Frontend Vercel:
+cd front-end && vercel --prod
 ```
 
-Open http://127.0.0.1:4200
-
-| Route | Purpose |
-| ----- | ------- |
-| `/` | Landing |
-| `/docs` | Theory & experimentation |
-| `/try` | Live agent watch + batch Monte Carlo |
-| `/results` | Bakeoff / DQN / ablation charts |
-| `/play` | Classic human + heuristic spectator |
+Prod Angular points at `https://twenty48-api.onrender.com/api`. DQN live play is omitted on the slim Render image (no torch); bakeoff/results charts still load from committed metrics.
 
 ---
 
