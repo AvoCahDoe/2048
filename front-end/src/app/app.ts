@@ -1,13 +1,17 @@
-import { Component, signal } from '@angular/core';
-import { RouterOutlet } from '@angular/router';
-import { GameComponent } from "./game/game";
+import { Component } from '@angular/core';
+import { RouterLink, RouterLinkActive, RouterOutlet } from '@angular/router';
 
 @Component({
   selector: 'app-root',
-  imports: [RouterOutlet, GameComponent],
+  imports: [RouterOutlet, RouterLink, RouterLinkActive],
   templateUrl: './app.html',
-  styleUrl: './app.scss'
+  styleUrl: './app.scss',
 })
 export class App {
-  protected readonly title = signal('front-end');
+  links = [
+    { path: '/', label: 'Lab', exact: true },
+    { path: '/docs', label: 'Docs', exact: false },
+    { path: '/try', label: 'Try', exact: false },
+    { path: '/results', label: 'Results', exact: false },
+  ];
 }

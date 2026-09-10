@@ -1,0 +1,107 @@
+<section class="max-w-6xl mx-auto px-4 py-10 sm:py-14">
+  <p class="text-[var(--amber)] text-sm tracking-widest uppercase font-display mb-1">Artifacts</p>
+  <h1 class="font-display font-extrabold text-4xl mb-2">Results</h1>
+  <p class="text-[var(--muted)] mb-8 max-w-2xl">
+    Precomputed bakeoff and DQN training curves from <code class="text-[var(--teal)]">experiments/runs</code>.
+    Re-run training anytime — this page reads the latest summaries live from the API.
+  </p>
+
+  @if (error()) {
+    <div class="mb-6 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-4 py-3 text-[var(--coral)] text-sm">
+      {{ error() }}
+    </div>
+  }
+
+  @if (loading()) {
+    <p class="text-[var(--muted)]">Loading experiment artifacts…</p>
+  }
+
+  <div class="grid lg:grid-cols-2 gap-6 mb-8">
+    <div class="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-6">
+      <h2 class="font-display font-bold text-xl mb-4">Agent bakeoff — mean score</h2>
+      <div class="space-y-3">
+        @for (b of scoreBars(); track b.agent) {
+          <div>
+            <div class="flex justify-between text-sm mb-1">
+              <span class="capitalize">{{ b.agent }}</span>
+              <span class="text-[var(--amber)] font-mono">{{ b.score | number: '1.0-0' }}</span>
+            </div>
+            <div class="h-3 rounded-full bg-[var(--ink)] overflow-hidden">
+              <div
+                class="h-full rounded-full bg-gradient-to-r from-[var(--teal)] to-[var(--amber)] transition-all duration-700"
+                [style.width.%]="b.pct"
+              ></div>
+            </div>
+          </div>
+        }
+      </div>
+      @if (bakeoffRows().length) {
+        <table class="w-full text-sm mt-6">
+          <thead class="text-[var(--muted)] text-left">
+            <tr>
+              <th class="py-2">Agent</th>
+              <th>Mean</th>
+              <th>Avg max</th>
+              <th>Best max</th>
+            </tr>
+          </thead>
+          <tbody>
+            @for (r of bakeoffRows(); track r.agent) {
+              <tr class="border-t border-[var(--line)]">
+                <td class="py-2 capitalize">{{ r.agent }}</td>
+                <td>{{ r.mean | number: '1.0-0' }}</td>
+                <td>{{ r.maxTile | number: '1.0-0' }}</td>
+                <td class="text-[var(--teal)]">{{ r.best }}</td>
+              </tr>
+            }
+          </tbody>
+        </table>
+      }
+    </div>
+
+    <div class="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-6">
+      <h2 class="font-display font-bold text-xl mb-2">DQN learning (default)</h2>
+      <p class="text-sm text-[var(--muted)] mb-4">Moving-average score across training episodes</p>
+      <svg viewBox="0 0 560 110" class="w-full h-36 bg-[var(--ink)] rounded-xl">
+        <path [attr.d]="sparkPath()" fill="none" stroke="#f0b429" stroke-width="2.5" />
+        @if (!sparkPath()) {
+          <text x="280" y="58" text-anchor="middle" fill="#8b97a8" font-size="14">No DQN metrics</text>
+        }
+      </svg>
+      @if (dqnSummary(); as s) {
+        <div class="mt-4 grid grid-cols-3 gap-3 text-center text-sm">
+          <div class="rounded-lg bg-[var(--ink)] p-3">
+            <div class="text-[var(--muted)] text-xs">Eval mean</div>
+            <div class="font-display text-lg text-[var(--amber)]">{{ fmt(s['mean_score']) }}</div>
+          </div>
+          <div class="rounded-lg bg-[var(--ink)] p-3">
+            <div class="text-[var(--muted)] text-xs">Mean max</div>
+            <div class="font-display text-lg">{{ fmt(s['mean_max_tile']) }}</div>
+          </div>
+          <div class="rounded-lg bg-[var(--ink)] p-3">
+            <div class="text-[var(--muted)] text-xs">Best max</div>
+            <div class="font-display text-lg text-[var(--teal)]">{{ s['max_max_tile'] }}</div>
+          </div>
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-6">
+    <h2 class="font-display font-bold text-xl mb-4">Ablations — mean eval score</h2>
+    <div class="grid sm:grid-cols-2 lg:grid-cols-4 gap-4">
+      @for (a of ablations(); track a.run) {
+        <div class="rounded-xl bg-[var(--ink)] p-4 border border-[var(--line)]">
+          <div class="text-xs text-[var(--muted)] mb-1 font-mono">{{ a.run }}</div>
+          <div class="font-display text-2xl font-bold text-[var(--amber)]">{{ a.mean | number: '1.0-0' }}</div>
+          <div class="mt-3 h-2 rounded-full bg-[var(--panel)] overflow-hidden">
+            <div class="h-full bg-[var(--teal)]" [style.width.%]="a.pct"></div>
+          </div>
+          <div class="mt-2 text-xs text-[var(--muted)]">avg max tile {{ a.maxTile | number: '1.0-0' }}</div>
+        </div>
+      } @empty {
+        <p class="text-[var(--muted)] text-sm">No ablation summaries found.</p>
+      }
+    </div>
+  </div>
+</section>

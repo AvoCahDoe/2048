@@ -1,0 +1,65 @@
+<section class="relative min-h-[calc(100vh-3.5rem)] overflow-hidden">
+  <!-- Full-bleed tile field -->
+  <div class="absolute inset-0 opacity-[0.18] pointer-events-none select-none" aria-hidden="true">
+    <div class="grid grid-cols-4 sm:grid-cols-8 gap-2 p-4 h-full auto-rows-fr">
+      @for (t of tiles; track $index) {
+        <div
+          class="tile-float rounded-lg flex items-center justify-center font-display font-bold text-2xl sm:text-4xl border border-white/5"
+          [style.background]="tileBg(t)"
+          [style.animation-delay]="($index * 0.08) + 's'"
+        >
+          {{ t }}
+        </div>
+      }
+    </div>
+  </div>
+
+  <div class="relative max-w-6xl mx-auto px-4 pt-20 pb-24 sm:pt-28">
+    <p class="font-display text-[var(--amber)] text-sm tracking-[0.25em] uppercase mb-4 animate-fade">
+      Research simulation lab
+    </p>
+    <h1 class="font-display font-extrabold text-5xl sm:text-7xl leading-[0.95] max-w-3xl animate-rise">
+      2048<span class="text-[var(--amber)]">.</span>lab
+    </h1>
+    <p class="mt-6 text-lg sm:text-xl text-[var(--muted)] max-w-xl leading-relaxed animate-rise-delay">
+      Watch heuristic search, expectimax, and a Double DQN fight the same stochastic board —
+      then read the theory and open the experiment graphs.
+    </p>
+
+    <div class="mt-10 flex flex-wrap gap-3 animate-rise-delay-2">
+      <a
+        routerLink="/try"
+        class="px-6 py-3 rounded-lg bg-[var(--amber)] text-[var(--ink)] font-semibold hover:brightness-110 transition"
+      >
+        Run a simulation
+      </a>
+      <a
+        routerLink="/docs"
+        class="px-6 py-3 rounded-lg border border-[var(--line)] text-[var(--text)] hover:border-[var(--teal)] transition"
+      >
+        Read the theory
+      </a>
+      <a
+        routerLink="/results"
+        class="px-6 py-3 rounded-lg border border-[var(--line)] text-[var(--muted)] hover:text-[var(--text)] transition"
+      >
+        See results
+      </a>
+    </div>
+
+    <div class="mt-20 grid sm:grid-cols-3 gap-4 max-w-4xl">
+      <article class="rounded-xl border border-[var(--line)] bg-[var(--panel)]/80 p-5">
+        <h2 class="font-display font-bold text-[var(--teal)]">Search</h2>
+        <p class="mt-2 text-sm text-[var(--muted)]">Expectimax rolls tile spawns into a shallow game tree.</p>
+      </article>
+      <article class="rounded-xl border border-[var(--line)] bg-[var(--panel)]/80 p-5">
+        <h2 class="font-display font-bold text-[var(--amber)]">Learn</h2>
+        <p class="mt-2 text-sm text-[var(--muted)]">Double DQN trains offline; load the checkpoint live.</p>
+      </article>
+      <article class="rounded-xl border border-[var(--line)] bg-[var(--panel)]/80 p-5">
+        <h2 class="font-display font-bold text-[var(--coral)]">Measure</h2>
+        <p class="mt-2 text-sm text-[var(--muted)]">Monte Carlo bakeoffs and ablation curves you can inspect.</p>
+      </article>
+    </div>
+  </div>
+</section>

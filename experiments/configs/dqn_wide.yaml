@@ -1,0 +1,17 @@
+name: dqn_wide
+seed: 42
+episodes: 200
+max_steps: 3000
+eval_every: 100
+eval_episodes: 8
+checkpoint_every: 100
+hidden: 256
+lr: 0.001
+gamma: 0.99
+epsilon_start: 1.0
+epsilon_end: 0.05
+epsilon_decay: 0.99
+batch_size: 64
+target_update: 80
+buffer_size: 30000
+max_tile_bonus: 0.0

@@ -1,0 +1,17 @@
+{
+  "agent": "heuristic",
+  "n_episodes": 30,
+  "mean_score": 4970.266666666666,
+  "median_score": 4858.0,
+  "std_score": 2306.427351747479,
+  "mean_max_tile": 405.3333333333333,
+  "max_max_tile": 1024,
+  "win_rate": 0.0,
+  "mean_steps": 358.26666666666665,
+  "tile_hist": {
+    "512": 13,
+    "256": 12,
+    "128": 3,
+    "1024": 2
+  }
+}

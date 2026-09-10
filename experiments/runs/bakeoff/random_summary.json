@@ -1,0 +1,17 @@
+{
+  "agent": "random",
+  "n_episodes": 30,
+  "mean_score": 893.6,
+  "median_score": 746.0,
+  "std_score": 381.3668050578078,
+  "mean_max_tile": 89.06666666666666,
+  "max_max_tile": 128,
+  "win_rate": 0.0,
+  "mean_steps": 104.26666666666667,
+  "tile_hist": {
+    "64": 15,
+    "128": 13,
+    "32": 1,
+    "16": 1
+  }
+}

@@ -1,0 +1,17 @@
+batch_size: 64
+buffer_size: 30000
+checkpoint_every: 150
+episodes: 300
+epsilon_decay: 0.99
+epsilon_end: 0.05
+epsilon_start: 1.0
+eval_episodes: 10
+eval_every: 100
+gamma: 0.99
+hidden: 128
+lr: 0.001
+max_steps: 3000
+max_tile_bonus: 0.0
+name: dqn_default
+seed: 42
+target_update: 100

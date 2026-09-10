@@ -1,0 +1,54 @@
+{
+  "random": {
+    "agent": "random",
+    "n_episodes": 30,
+    "mean_score": 893.6,
+    "median_score": 746.0,
+    "std_score": 381.3668050578078,
+    "mean_max_tile": 89.06666666666666,
+    "max_max_tile": 128,
+    "win_rate": 0.0,
+    "mean_steps": 104.26666666666667,
+    "tile_hist": {
+      "64": 15,
+      "128": 13,
+      "32": 1,
+      "16": 1
+    }
+  },
+  "heuristic": {
+    "agent": "heuristic",
+    "n_episodes": 30,
+    "mean_score": 4970.266666666666,
+    "median_score": 4858.0,
+    "std_score": 2306.427351747479,
+    "mean_max_tile": 405.3333333333333,
+    "max_max_tile": 1024,
+    "win_rate": 0.0,
+    "mean_steps": 358.26666666666665,
+    "tile_hist": {
+      "512": 13,
+      "256": 12,
+      "128": 3,
+      "1024": 2
+    }
+  },
+  "expectimax": {
+    "agent": "expectimax",
+    "n_episodes": 30,
+    "mean_score": 4927.733333333334,
+    "median_score": 3964.0,
+    "std_score": 2789.701811225629,
+    "mean_max_tile": 405.3333333333333,
+    "max_max_tile": 1024,
+    "win_rate": 0.0,
+    "mean_steps": 356.46666666666664,
+    "tile_hist": {
+      "256": 12,
+      "512": 11,
+      "1024": 3,
+      "128": 2,
+      "64": 2
+    }
+  }
+}

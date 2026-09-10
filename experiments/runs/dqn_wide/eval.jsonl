@@ -1,0 +1,2 @@
+{"agent": "dqn", "n_episodes": 8, "mean_score": 2765.0, "median_score": 2448.0, "std_score": 1464.7999863462587, "mean_max_tile": 264.0, "max_max_tile": 512, "win_rate": 0.0, "mean_steps": 227.625, "tile_hist": {"256": 3, "128": 2, "512": 2, "64": 1}, "episode": 100}
+{"agent": "dqn", "n_episodes": 8, "mean_score": 1609.0, "median_score": 1532.0, "std_score": 615.0926759440401, "mean_max_tile": 132.0, "max_max_tile": 256, "win_rate": 0.0, "mean_steps": 161.125, "tile_hist": {"128": 6, "32": 1, "256": 1}, "episode": 200}

@@ -1,0 +1,16 @@
+{
+  "agent": "dqn",
+  "n_episodes": 30,
+  "mean_score": 1855.8666666666666,
+  "median_score": 1684.0,
+  "std_score": 809.029366312222,
+  "mean_max_tile": 155.73333333333332,
+  "max_max_tile": 256,
+  "win_rate": 0.0,
+  "mean_steps": 177.16666666666666,
+  "tile_hist": {
+    "128": 16,
+    "256": 9,
+    "64": 5
+  }
+}

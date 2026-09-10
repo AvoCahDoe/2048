@@ -1,0 +1,18 @@
+{
+  "agent": "expectimax",
+  "n_episodes": 30,
+  "mean_score": 4927.733333333334,
+  "median_score": 3964.0,
+  "std_score": 2789.701811225629,
+  "mean_max_tile": 405.3333333333333,
+  "max_max_tile": 1024,
+  "win_rate": 0.0,
+  "mean_steps": 356.46666666666664,
+  "tile_hist": {
+    "256": 12,
+    "512": 11,
+    "1024": 3,
+    "128": 2,
+    "64": 2
+  }
+}

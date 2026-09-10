@@ -1,7 +1,6 @@
-<div class="fixed inset-0 bg-black text-white flex overflow-hidden">
-  
+<div class="min-h-[calc(100vh-3.5rem)] bg-black text-white flex overflow-hidden">
   <!-- Left Sidebar: Move History -->
-  <div class="w-80 flex flex-col border-r border-purple-800 bg-purple-900/20">
+  <div class="w-72 flex flex-col border-r border-purple-800 bg-purple-900/20">
     <div class="p-4 border-b border-purple-800">
       <h3 class="text-xl font-bold text-center">Move History</h3>
     </div>
@@ -10,12 +9,38 @@
     </div>
   </div>
 
-  <!-- Center Area: Game Board + Controls -->
-  <div class="flex-1 flex flex-col items-center justify-center p-6 bg-gradient-to-br from-purple-900/10 to-black">
-    
-    <!-- Compact Game Board - Centered -->
-    <div class="bg-gradient-to-br from-purple-900 to-black p-4 rounded-2xl shadow-2xl border-2 border-white mb-6">
-      <div class="grid grid-rows-4 gap-3" style="width: 400px; height: 400px;">
+  <!-- Center: Board + Controls -->
+  <div class="flex-1 flex flex-col items-center justify-center p-4 bg-gradient-to-br from-purple-900/10 to-black relative">
+    <!-- Mode toggle -->
+    <div class="flex gap-2 mb-4">
+      <button
+        type="button"
+        (click)="setMode('human')"
+        class="px-4 py-2 rounded-lg border transition-all"
+        [ngClass]="
+          playMode === 'human'
+            ? 'bg-purple-600 border-purple-400'
+            : 'bg-purple-900/40 border-purple-800'
+        "
+      >
+        Human
+      </button>
+      <button
+        type="button"
+        (click)="setMode('watch')"
+        class="px-4 py-2 rounded-lg border transition-all"
+        [ngClass]="
+          playMode === 'watch'
+            ? 'bg-purple-600 border-purple-400'
+            : 'bg-purple-900/40 border-purple-800'
+        "
+      >
+        Watch Heuristic AI
+      </button>
+    </div>
+
+    <div class="bg-gradient-to-br from-purple-900 to-black p-4 rounded-2xl shadow-2xl border-2 border-white mb-4 relative">
+      <div class="grid grid-rows-4 gap-3" style="width: 360px; height: 360px;">
         <div *ngFor="let row of board" class="grid grid-cols-4 gap-3">
           <div
             *ngFor="let cell of row"
@@ -27,44 +52,51 @@
           </div>
         </div>
       </div>
+
+      <!-- Win / Lose overlay -->
+      <div
+        *ngIf="status === 'won' && !wonAcknowledged"
+        class="absolute inset-0 bg-black/70 rounded-2xl flex flex-col items-center justify-center gap-3"
+      >
+        <p class="text-3xl font-bold text-yellow-300">You reached 2048!</p>
+        <button
+          type="button"
+          class="px-4 py-2 bg-purple-600 rounded-lg hover:bg-purple-500"
+          (click)="continueAfterWin()"
+        >
+          Keep playing
+        </button>
+      </div>
+      <div
+        *ngIf="status === 'lost'"
+        class="absolute inset-0 bg-black/70 rounded-2xl flex flex-col items-center justify-center gap-3"
+      >
+        <p class="text-3xl font-bold text-red-300">Game Over</p>
+        <p class="text-purple-200">Score {{ score }} · {{ moves }} moves</p>
+      </div>
     </div>
 
-    <!-- Controls Panel - Under Board -->
-    <div class="bg-purple-900/80 backdrop-blur-sm rounded-xl p-4 border border-purple-700 w-full max-w-md">
+    <div class="bg-purple-900/80 backdrop-blur-sm rounded-xl p-3 border border-purple-700 w-full max-w-md">
       <app-controls
         [canStart]="true"
         (onStart)="handleGameStart()"
         (onPause)="handleGamePause()"
-        (onReset)="handleGameReset()">
+        (onReset)="handleGameReset()"
+      >
       </app-controls>
     </div>
   </div>
 
-  <!-- Right Sidebar: Score and Info -->
-  <div class="w-64 flex flex-col border-l border-purple-800 bg-purple-900/20 p-6">
-    <!-- Score Display -->
-    <div class="bg-purple-900/80 rounded-xl p-4 mb-6 border border-purple-700">
+  <!-- Right: Score + live analysis -->
+  <div class="w-80 flex flex-col border-l border-purple-800 bg-purple-900/20 p-4 overflow-y-auto">
+    <div class="bg-purple-900/80 rounded-xl p-4 mb-4 border border-purple-700">
       <h3 class="text-lg font-semibold text-center mb-2">Score</h3>
-      <div class="text-3xl font-bold text-center text-white">{{ score }}</div>
+      <div class="text-3xl font-bold text-center">{{ score }}</div>
     </div>
-
-    <!-- Moves Counter -->
-    <div class="bg-purple-900/80 rounded-xl p-4 mb-6 border border-purple-700">
+    <div class="bg-purple-900/80 rounded-xl p-4 mb-4 border border-purple-700">
       <h3 class="text-lg font-semibold text-center mb-2">Moves</h3>
-      <div class="text-3xl font-bold text-center text-white">{{ moves }}</div>
+      <div class="text-3xl font-bold text-center">{{ moves }}</div>
     </div>
-
-    <!-- Navigation Buttons -->
-    <div class="mt-auto space-y-4">
-      <button class="w-full py-3 rounded-lg bg-purple-700 hover:bg-purple-600 flex items-center justify-center text-white transition-all">
-        <span class="mr-2">🏠</span> Home
-      </button>
-      <button class="w-full py-3 rounded-lg bg-purple-700 hover:bg-purple-600 flex items-center justify-center text-white transition-all">
-        <span class="mr-2">📊</span> Stats
-      </button>
-      <button class="w-full py-3 rounded-lg bg-purple-700 hover:bg-purple-600 flex items-center justify-center text-white transition-all">
-        <span class="mr-2">⚙️</span> Settings
-      </button>
-    </div>
+    <app-data-analysis [moves]="moveHistory" [score]="score"></app-data-analysis>
   </div>
 </div>

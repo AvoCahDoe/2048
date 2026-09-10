@@ -1,78 +1,135 @@
-# 🎮 2048 AI – Angular-Based Web Game
+# 2048 Research Lab
 
-A web-based version of the classic puzzle game **2048** — with a twist.
+PhD-portfolio research project: **simulate, search, and learn** policies for classic 2048 — Monte Carlo bakeoffs, expectimax, Double DQN with ablations, and graph-heavy analysis — plus a polished Angular playable companion.
 
-> ✅ **Play manually now.**  
-> 🧠 **Coming soon:** Challenge an **unbeatable rule-based AI**, or watch a **self-learning DQN agent** master the game over time.
-
----
-
-## 🚧 Project Status
-
-✅ Manual play mode  
-🛠 AI modules in progress (rule-based + reinforcement learning)  
-🧪 DQN integration planned
+> Browser: human play + heuristic spectator.  
+> Python (`uv`): Gymnasium env, agents, training, notebooks, Streamlit dashboard.
 
 ---
 
-## 📦 Features
+## Methods
 
-### ✅ Available Now
+| Agent | Idea |
+| ----- | ---- |
+| Random | Uniform legal moves (baseline) |
+| Heuristic | Empty cells, snake weights, smoothness, monotonicity |
+| Expectimax | Shallow probabilistic search over tile spawns |
+| Double DQN | CNN Q-network, replay buffer, target net, ε-greedy |
 
-- Classic 2048 mechanics: tile sliding, merging, scoring
-- Responsive UI using Angular
-- Move history panel (see what moves you made)
-
-### 🔜 Coming Soon
-
-- 🧠 **Rule-based AI**: Watch or compete with a near-optimal AI based on handcrafted logic
-- 🤖 **DQN (Deep Q-Network)**: A self-learning AI that trains over time via rewards
-- 🏆 Game modes:
-  - Player vs AI
-  - AI vs AI
-  - Auto-train mode
-- 📊 Visualization of learning progress (score, Q-values, move choices)
-- 💾 Save/Load agent memory
+**Ablations** (YAML under `experiments/configs/`): learning rate, max-tile reward bonus, network width.
 
 ---
 
-## 💻 Tech Stack
-
-| Layer    | Tech                         |
-| -------- | ---------------------------- |
-| Frontend | Angular 17+, TypeScript      |
-| UI       | Tailwind CSS (will add soon) |
-| AI Logic | (Coming soon) TensorFlow.js  |
-
----
-
-## 🚀 Getting Started
-
-### Prerequisites
-
-- Node.js (v16+)
-- Angular CLI
+## Quick start (Python / `uv`)
 
 ```bash
-npm install -g @angular/cli
+cd 2048
+uv sync --extra dev
+
+# Smoke test
+uv run python scripts/smoke_test.py
+
+# Agent bakeoff (Monte Carlo)
+uv run twenty48-sim --bakeoff --episodes 30 --depth 1
+
+# Train Double DQN (CPU-friendly demo length)
+uv run twenty48-train --config experiments/configs/dqn_default.yaml
+
+# Ablations
+uv run twenty48-train --config experiments/configs/dqn_lr_low.yaml
+uv run twenty48-train --config experiments/configs/dqn_tile_bonus.yaml
+uv run twenty48-train --config experiments/configs/dqn_wide.yaml
+
+# Static plots for slides / README
+uv run python scripts/export_plots.py
+
+# Interactive dashboard
+uv run streamlit run scripts/dashboard.py
+
+# Notebooks
+uv run jupyter lab notebooks/
 ```
+
+Raise `episodes` in the YAML configs to scale beyond the CPU demo defaults.
+
+---
+
+## Results (shipped demo runs)
+
+### Agent bakeoff — 30 episodes, seed 42, expectimax depth 1
+
+| Agent | Mean score | Max tile (mean / best) |
+| ----- | ---------- | ---------------------- |
+| random | 894 | 89 / 128 |
+| heuristic | **4970** | 405 / **1024** |
+| expectimax | 4928 | 405 / 1024 |
+
+![Bakeoff](assets/plots/bakeoff.png)
+
+Heuristic and shallow expectimax both crush random. Deeper expectimax (`--depth 2+`) trades compute for strength.
+
+Artifacts: `experiments/runs/bakeoff/`.
+
+### Double DQN — short CPU demos + ablations
+
+Final greedy eval (30 games) after training:
+
+| Run | Episodes | Mean score | Mean max tile | Best max tile |
+| --- | -------- | ---------- | ------------- | ------------- |
+| dqn_default | 300 | **2229** | 174 | 512 |
+| dqn_lr_low | 200 | 1189 | 97 | 256 |
+| dqn_tile_bonus | 200 | 1856 | 156 | 256 |
+| dqn_wide | 200 | 1849 | 147 | 512 |
+
+![DQN learning](assets/plots/dqn_learning.png)
+
+![Ablations](assets/plots/dqn_ablations.png)
+
+Even short DQN runs beat random (~894) and approach heuristic play with longer training. Checkpoints live under each run’s `checkpoints/` (gitignored; retrain to regenerate). Metrics: `experiments/runs/*/metrics.jsonl`.
+
+---
+
+## Project layout
+
+```
+2048/
+  pyproject.toml          # uv project (package: twenty48)
+  src/twenty48/
+    env/                  # Gymnasium 2048
+    agents/               # random, heuristic, expectimax, DQN
+    sim/                  # Monte Carlo + bakeoff
+    train/                # DQN loop, checkpoints, metrics
+    viz/                  # Plotly helpers
+  scripts/dashboard.py    # Streamlit
+  notebooks/              # Showcase analysis
+  experiments/configs/    # Train / ablation YAMLs
+  front-end/              # Angular companion game
+```
+
+---
+
+## Interactive web portal
 
 ```bash
-git clone https://github.com/AvoCahDoe/2048.git
-cd 2048-angular-ai
-npm install
-ng serve
+# Terminal 1 — API
+uv run twenty48-api
 
+# Terminal 2 — Angular (proxies /api → :8000)
+cd front-end && npm start
 ```
 
-> Then open your browser at http://localhost:4200
+Open http://127.0.0.1:4200
 
-### ✨ Screenshots
+| Route | Purpose |
+| ----- | ------- |
+| `/` | Landing |
+| `/docs` | Theory & experimentation |
+| `/try` | Live agent watch + batch Monte Carlo |
+| `/results` | Bakeoff / DQN / ablation charts |
+| `/play` | Classic human + heuristic spectator |
 
-![alt text](./assets/image.png)
+---
 
-Goal Design : 
+## Framing for applications
 
-![alt text](./assets/imageDes.png)
-
-
+This project demonstrates: environment design, classical game-tree search under stochasticity, deep RL (Double DQN), controlled ablations, and reproducible experiment tooling (`uv`, YAML configs, checkpoints, interactive viz).

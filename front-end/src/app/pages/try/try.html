@@ -1,0 +1,162 @@
+<section class="max-w-6xl mx-auto px-4 py-10 sm:py-14">
+  <div class="flex flex-col sm:flex-row sm:items-end sm:justify-between gap-4 mb-8">
+    <div>
+      <p class="text-[var(--amber)] text-sm tracking-widest uppercase font-display mb-1">Interactive</p>
+      <h1 class="font-display font-extrabold text-4xl">Try simulations</h1>
+      <p class="text-[var(--muted)] mt-2 max-w-xl">
+        Watch an agent play live, or fire a short Monte Carlo batch and read the scoreboard.
+      </p>
+    </div>
+    <div class="text-sm" [class.text-[var(--teal)]]="apiOk()" [class.text-[var(--coral)]]="!apiOk()">
+      API {{ apiOk() ? 'online' : 'offline' }}
+    </div>
+  </div>
+
+  @if (error()) {
+    <div class="mb-6 rounded-lg border border-[var(--coral)]/40 bg-[var(--coral)]/10 px-4 py-3 text-[var(--coral)] text-sm">
+      {{ error() }}
+    </div>
+  }
+
+  <div class="grid lg:grid-cols-[1fr_320px] gap-8">
+    <!-- Board / live -->
+    <div class="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-5 sm:p-6">
+      <div class="flex flex-wrap items-center gap-3 mb-5">
+        <label class="text-sm text-[var(--muted)]">Agent</label>
+        <select
+          [(ngModel)]="agent"
+          class="bg-[var(--ink)] border border-[var(--line)] rounded-md px-3 py-2 text-sm"
+        >
+          @for (a of agents; track a.id) {
+            <option [value]="a.id">{{ a.label }}</option>
+          }
+        </select>
+        @if (agent === 'expectimax') {
+          <label class="text-sm text-[var(--muted)]">Depth</label>
+          <select [(ngModel)]="depth" class="bg-[var(--ink)] border border-[var(--line)] rounded-md px-2 py-2 text-sm">
+            <option [ngValue]="1">1</option>
+            <option [ngValue]="2">2</option>
+          </select>
+        }
+      </div>
+
+      <div class="flex flex-wrap gap-6 items-start">
+        <div class="board">
+          @for (row of board(); track $index) {
+            <div class="board-row">
+              @for (cell of row; track $index) {
+                <div class="cell" [ngClass]="tileClass(cell)">
+                  {{ cell || '' }}
+                </div>
+              }
+            </div>
+          }
+        </div>
+
+        <div class="space-y-3 min-w-[140px]">
+          <div>
+            <div class="text-xs text-[var(--muted)] uppercase tracking-wide">Score</div>
+            <div class="font-display text-3xl font-bold">{{ score() }}</div>
+          </div>
+          <div>
+            <div class="text-xs text-[var(--muted)] uppercase tracking-wide">Max tile</div>
+            <div class="font-display text-2xl font-bold text-[var(--amber)]">{{ maxTile() }}</div>
+          </div>
+          <div>
+            <div class="text-xs text-[var(--muted)] uppercase tracking-wide">Last move</div>
+            <div class="font-mono text-[var(--teal)]">{{ lastAction() || '—' }}</div>
+          </div>
+          @if (done()) {
+            <div class="text-[var(--coral)] font-semibold">Game over</div>
+          }
+        </div>
+      </div>
+
+      <div class="mt-6 flex flex-wrap gap-2">
+        <button
+          type="button"
+          (click)="resetBoard()"
+          class="px-4 py-2 rounded-md border border-[var(--line)] text-sm hover:border-[var(--muted)]"
+          [disabled]="busy()"
+        >
+          New board
+        </button>
+        <button
+          type="button"
+          (click)="stepOnce()"
+          class="px-4 py-2 rounded-md bg-[var(--ink-2)] border border-[var(--line)] text-sm"
+          [disabled]="busy() || done()"
+        >
+          Step
+        </button>
+        <button
+          type="button"
+          (click)="toggleWatch()"
+          class="px-4 py-2 rounded-md font-semibold text-sm"
+          [class.bg-[var(--amber)]]="!watching()"
+          [class.text-[var(--ink)]]="!watching()"
+          [class.bg-[var(--coral)]]="watching()"
+          [class.text-white]="watching()"
+        >
+          {{ watching() ? 'Stop' : 'Watch play' }}
+        </button>
+      </div>
+    </div>
+
+    <!-- Batch -->
+    <aside class="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-5 h-fit">
+      <h2 class="font-display font-bold text-xl mb-1">Batch run</h2>
+      <p class="text-sm text-[var(--muted)] mb-4">Short Monte Carlo on the selected agent.</p>
+
+      <label class="block text-xs text-[var(--muted)] mb-1">Episodes (1–50)</label>
+      <input
+        type="number"
+        [(ngModel)]="episodes"
+        min="1"
+        max="50"
+        class="w-full mb-3 bg-[var(--ink)] border border-[var(--line)] rounded-md px-3 py-2 text-sm"
+      />
+
+      <label class="block text-xs text-[var(--muted)] mb-1">Seed</label>
+      <input
+        type="number"
+        [(ngModel)]="seed"
+        class="w-full mb-4 bg-[var(--ink)] border border-[var(--line)] rounded-md px-3 py-2 text-sm"
+      />
+
+      <button
+        type="button"
+        (click)="runBatch()"
+        class="w-full py-2.5 rounded-md bg-[var(--teal)] text-[var(--ink)] font-semibold disabled:opacity-50"
+        [disabled]="busy()"
+      >
+        {{ busy() && !watching() ? 'Running…' : 'Run batch' }}
+      </button>
+
+      @if (batchResult(); as r) {
+        <div class="mt-5 space-y-2 text-sm border-t border-[var(--line)] pt-4">
+          <div class="flex justify-between"><span class="text-[var(--muted)]">Agent</span><span>{{ r.agent }}</span></div>
+          <div class="flex justify-between"><span class="text-[var(--muted)]">Mean score</span><span class="text-[var(--amber)]">{{ summaryNum('mean_score') }}</span></div>
+          <div class="flex justify-between"><span class="text-[var(--muted)]">Mean max tile</span><span>{{ summaryNum('mean_max_tile') }}</span></div>
+          <div class="flex justify-between"><span class="text-[var(--muted)]">Best max tile</span><span>{{ summaryNum('max_max_tile') }}</span></div>
+          <div class="mt-3 max-h-40 overflow-auto">
+            <table class="w-full text-xs">
+              <thead class="text-[var(--muted)]">
+                <tr><th class="text-left py-1">#</th><th class="text-right">Score</th><th class="text-right">Max</th></tr>
+              </thead>
+              <tbody>
+                @for (ep of r.episodes; track ep.episode) {
+                  <tr class="border-t border-[var(--line)]/60">
+                    <td class="py-1">{{ ep.episode + 1 }}</td>
+                    <td class="text-right">{{ ep.score }}</td>
+                    <td class="text-right text-[var(--teal)]">{{ ep.max_tile }}</td>
+                  </tr>
+                }
+              </tbody>
+            </table>
+          </div>
+        </div>
+      }
+    </aside>
+  </div>
+</section>

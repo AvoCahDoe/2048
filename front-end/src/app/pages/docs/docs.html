@@ -1,0 +1,47 @@
+<article class="max-w-3xl mx-auto px-4 py-12 sm:py-16">
+  <p class="text-[var(--amber)] text-sm tracking-widest uppercase font-display mb-2">Theory &amp; design</p>
+  <h1 class="font-display font-extrabold text-4xl sm:text-5xl mb-6">How the lab thinks</h1>
+  <p class="text-[var(--muted)] text-lg leading-relaxed mb-10">
+    2048 is a Markov decision process with a tiny action set and a noisy transition model
+    (new 2/4 tiles after every move). That makes it a clean sandbox for comparing handcrafted
+    search against learned value functions.
+  </p>
+
+  <section class="space-y-8">
+    <div class="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-6">
+      <h2 class="font-display text-2xl font-bold text-[var(--teal)] mb-3">Environment</h2>
+      <ul class="space-y-2 text-[var(--muted)] list-disc pl-5">
+        <li>4×4 board, actions = Up / Right / Down / Left</li>
+        <li>After a successful slide/merge, spawn 2 (p=0.9) or 4 (p=0.1)</li>
+        <li>Reward ≈ merge score; episode ends when no legal move remains</li>
+        <li>Observations for DQN: log₂-scaled board tensor</li>
+      </ul>
+    </div>
+
+    <div class="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-6">
+      <h2 class="font-display text-2xl font-bold text-[var(--amber)] mb-3">Agents</h2>
+      <div class="space-y-4 text-[var(--muted)]">
+        <p><strong class="text-[var(--text)]">Heuristic</strong> — scores empties, snake/corner weights, smoothness, and monotonicity, then greedily picks the best one-ply move.</p>
+        <p><strong class="text-[var(--text)]">Expectimax</strong> — max node over actions, chance node over spawn locations/values; depth capped for interactive demos.</p>
+        <p><strong class="text-[var(--text)]">Double DQN</strong> — CNN Q-network, replay buffer, target net, ε-greedy during training; inference uses a saved checkpoint.</p>
+      </div>
+    </div>
+
+    <div class="rounded-2xl border border-[var(--line)] bg-[var(--panel)] p-6">
+      <h2 class="font-display text-2xl font-bold text-[var(--coral)] mb-3">Experimentation</h2>
+      <p class="text-[var(--muted)] mb-3">
+        Monte Carlo bakeoffs (many seeded games) estimate score and max-tile distributions.
+        DQN ablations vary learning rate, reward shaping (max-tile bonus), and network width.
+      </p>
+      <p class="text-[var(--muted)]">
+        Artifacts land in <code class="text-[var(--teal)]">experiments/runs/</code> —
+        metrics JSONL, summaries, and checkpoints you can load on the Try page.
+      </p>
+    </div>
+  </section>
+
+  <div class="mt-10 flex gap-3">
+    <a routerLink="/try" class="px-5 py-2.5 rounded-lg bg-[var(--amber)] text-[var(--ink)] font-semibold">Try it</a>
+    <a routerLink="/results" class="px-5 py-2.5 rounded-lg border border-[var(--line)]">Open results</a>
+  </div>
+</article>

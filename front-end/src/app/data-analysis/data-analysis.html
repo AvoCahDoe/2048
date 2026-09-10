@@ -1,1 +1,39 @@
-<p>data-analysis works!</p>
+<div class="bg-purple-900/80 rounded-xl p-4 border border-purple-700 space-y-4">
+  <h3 class="text-lg font-semibold text-center">Live Analysis</h3>
+
+  <div>
+    <p class="text-sm text-purple-300 mb-1">Score over moves</p>
+    <svg viewBox="0 0 260 100" class="w-full h-24 bg-black/40 rounded">
+      <path
+        *ngIf="scorePath"
+        [attr.d]="scorePath"
+        fill="none"
+        stroke="#c084fc"
+        stroke-width="2"
+      />
+      <text *ngIf="!scorePath" x="130" y="55" text-anchor="middle" fill="#6b7280" font-size="12">
+        Play to see the curve
+      </text>
+    </svg>
+  </div>
+
+  <div>
+    <p class="text-sm text-purple-300 mb-2">Move directions</p>
+    <div class="space-y-2" *ngIf="moves.length; else emptyDirs">
+      <div *ngFor="let d of directions" class="flex items-center gap-2 text-sm">
+        <span class="w-12">{{ d.label }}</span>
+        <div class="flex-1 h-3 bg-black/40 rounded overflow-hidden">
+          <div
+            class="h-full rounded transition-all duration-300"
+            [style.width.%]="d.pct"
+            [style.background]="d.color"
+          ></div>
+        </div>
+        <span class="w-8 text-right text-purple-200">{{ d.count }}</span>
+      </div>
+    </div>
+    <ng-template #emptyDirs>
+      <p class="text-gray-500 text-sm text-center">No moves yet</p>
+    </ng-template>
+  </div>
+</div>

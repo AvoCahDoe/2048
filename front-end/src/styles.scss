@@ -1,2 +1,42 @@
-/* You can add global styles to this file, and also import other style files */
 @import "tailwindcss";
+
+:root {
+  --ink: #0b0e13;
+  --ink-2: #12171f;
+  --panel: #171d27;
+  --line: #2a3342;
+  --text: #e8edf5;
+  --muted: #8b97a8;
+  --amber: #f0b429;
+  --teal: #2dd4bf;
+  --coral: #ff6b4a;
+  --font-display: "Syne", sans-serif;
+  --font-body: "DM Sans", sans-serif;
+}
+
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--ink);
+  color: var(--text);
+  font-family: var(--font-body);
+}
+
+.font-display {
+  font-family: var(--font-display);
+}
+
+.lab-grid {
+  background-color: var(--ink);
+  background-image:
+    linear-gradient(rgba(240, 180, 41, 0.05) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(240, 180, 41, 0.05) 1px, transparent 1px);
+  background-size: 48px 48px;
+}
+
+.lab-glow {
+  background:
+    radial-gradient(ellipse 60% 40% at 20% 10%, rgba(240, 180, 41, 0.14), transparent),
+    radial-gradient(ellipse 50% 35% at 85% 20%, rgba(45, 212, 191, 0.1), transparent);
+}

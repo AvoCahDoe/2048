@@ -1,1 +1,31 @@
-<app-game></app-game>
+<div class="min-h-screen lab-grid lab-glow flex flex-col">
+  <header class="sticky top-0 z-40 border-b border-[var(--line)] bg-[color-mix(in_srgb,var(--ink)_88%,transparent)] backdrop-blur-md">
+    <div class="max-w-6xl mx-auto px-4 h-14 flex items-center justify-between gap-4">
+      <a routerLink="/" class="font-display font-extrabold tracking-tight text-lg text-[var(--text)]">
+        2048<span class="text-[var(--amber)]">.</span>lab
+      </a>
+      <nav class="flex items-center gap-1 sm:gap-2">
+        @for (link of links; track link.path) {
+          <a
+            [routerLink]="link.path"
+            routerLinkActive="text-[var(--ink)] bg-[var(--amber)]"
+            [routerLinkActiveOptions]="{ exact: link.exact }"
+            class="px-3 py-1.5 rounded-md text-sm font-medium text-[var(--muted)] hover:text-[var(--text)] transition-colors"
+          >
+            {{ link.label }}
+          </a>
+        }
+        <a
+          routerLink="/play"
+          class="ml-2 hidden sm:inline-flex px-3 py-1.5 rounded-md text-sm font-semibold border border-[var(--teal)] text-[var(--teal)] hover:bg-[var(--teal)] hover:text-[var(--ink)] transition-colors"
+        >
+          Classic play
+        </a>
+      </nav>
+    </div>
+  </header>
+
+  <main class="flex-1">
+    <router-outlet />
+  </main>
+</div>
