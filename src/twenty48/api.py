@@ -3,6 +3,7 @@
 from __future__ import annotations
 
 import json
+import os
 from pathlib import Path
 from typing import Any, Literal, Optional
 
@@ -13,7 +14,6 @@ from fastapi.middleware.cors import CORSMiddleware
 from pydantic import BaseModel, Field
 
 from twenty48.agents import get_agent
-from twenty48.agents.dqn_agent import DQNAgent
 from twenty48.env.game2048 import (
     ACTION_NAMES,
     Game2048Env,
@@ -26,15 +26,24 @@ from twenty48.sim import run_episode, summarize_results
 ROOT = Path(__file__).resolve().parents[2]
 RUNS = ROOT / "experiments" / "runs"
 
+try:
+    from twenty48.agents.dqn_agent import DQNAgent
+
+    HAS_DQN = True
+except Exception:  # torch missing on slim deploys
+    DQNAgent = None  # type: ignore[misc, assignment]
+    HAS_DQN = False
+
 app = FastAPI(
     title="2048 Research Lab API",
     description="Interactive simulation + experiment artifacts",
     version="0.1.0",
 )
 
+_cors = [o.strip() for o in os.getenv("CORS_ORIGINS", "*").split(",") if o.strip()]
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=["*"],
+    allow_origins=_cors if _cors != ["*"] else ["*"],
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],
@@ -68,14 +77,26 @@ def _repo_runs() -> Path:
     return RUNS
 
 
+def _dqn_checkpoint_ready() -> bool:
+    if not HAS_DQN:
+        return False
+    return (_repo_runs() / "dqn_default" / "checkpoints" / "best.pt").exists() or (
+        _repo_runs() / "dqn_default" / "checkpoints" / "final.pt"
+    ).exists()
+
+
 def _load_agent(name: str, depth: int = 1, checkpoint: str | None = None, seed: int | None = None):
     if name == "dqn":
+        if not HAS_DQN:
+            raise HTTPException(
+                503,
+                "DQN runtime not installed on this deploy (torch omitted). Use heuristic or expectimax.",
+            )
         agent = DQNAgent(train_mode=False, seed=seed)
         ckpt = Path(checkpoint) if checkpoint else _repo_runs() / "dqn_default" / "checkpoints" / "best.pt"
         if not ckpt.is_absolute():
             ckpt = ROOT / ckpt
         if not ckpt.exists():
-            # fallback final
             alt = _repo_runs() / "dqn_default" / "checkpoints" / "final.pt"
             if alt.exists():
                 ckpt = alt
@@ -91,15 +112,12 @@ def _load_agent(name: str, depth: int = 1, checkpoint: str | None = None, seed: 
 
 
 @app.get("/api/health")
-def health() -> dict[str, str]:
-    return {"status": "ok"}
+def health() -> dict[str, Any]:
+    return {"status": "ok", "dqn": HAS_DQN and _dqn_checkpoint_ready()}
 
 
 @app.get("/api/agents")
 def list_agents() -> dict[str, Any]:
-    dqn_ready = (_repo_runs() / "dqn_default" / "checkpoints" / "best.pt").exists() or (
-        _repo_runs() / "dqn_default" / "checkpoints" / "final.pt"
-    ).exists()
     return {
         "agents": [
             {"id": "random", "label": "Random", "blurb": "Uniform legal moves — baseline."},
@@ -117,7 +135,7 @@ def list_agents() -> dict[str, Any]:
                 "id": "dqn",
                 "label": "Double DQN",
                 "blurb": "Learned Q-policy from checkpoint.",
-                "ready": dqn_ready,
+                "ready": _dqn_checkpoint_ready(),
             },
         ]
     }
@@ -167,11 +185,9 @@ def agent_step(body: StepRequest) -> dict[str, Any]:
     action = int(agent.act(obs, info))
     new_board, gained, _, moved = move_board(board, action)
     if not moved:
-        # shouldn't happen for legal act; pick first legal
         action = info["legal_actions"][0]
         new_board, gained, _, moved = move_board(board, action)
 
-    # spawn like env
     rng = np.random.default_rng(body.seed)
     empties = list(zip(*np.where(new_board == 0)))
     if empties:
@@ -249,7 +265,6 @@ def results_dqn(run: str = "dqn_default") -> dict[str, Any]:
     if not metrics_path.exists():
         raise HTTPException(404, f"No metrics for run '{run}'")
     metrics = pd.read_json(metrics_path, lines=True)
-    # downsample for UI
     if len(metrics) > 400:
         metrics = metrics.iloc[:: max(1, len(metrics) // 400)]
     summary = json.loads(summary_path.read_text(encoding="utf-8")) if summary_path.exists() else {}
@@ -276,7 +291,8 @@ def results_ablations() -> dict[str, Any]:
 def main() -> None:
     import uvicorn
 
-    uvicorn.run("twenty48.api:app", host="127.0.0.1", port=8000, reload=False)
+    port = int(os.getenv("PORT", "8000"))
+    uvicorn.run("twenty48.api:app", host="0.0.0.0", port=port, reload=False)
 
 
 if __name__ == "__main__":

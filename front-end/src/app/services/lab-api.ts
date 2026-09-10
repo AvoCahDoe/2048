@@ -1,6 +1,7 @@
 import { Injectable, inject } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { environment } from '../../environments/environment';
 
 export type AgentId = 'random' | 'heuristic' | 'expectimax' | 'dqn';
 
@@ -32,7 +33,7 @@ export interface RunResult {
 @Injectable({ providedIn: 'root' })
 export class LabApi {
   private http = inject(HttpClient);
-  private base = '/api';
+  private base = environment.apiBase;
 
   health(): Observable<{ status: string }> {
     return this.http.get<{ status: string }>(`${this.base}/health`);

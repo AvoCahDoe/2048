@@ -1,28 +1,9 @@
-"""Shared agent protocol and registry."""
-
-from __future__ import annotations
-
-from typing import Any, Protocol
-
-import numpy as np
+from twenty48.agents.heuristic import HeuristicAgent
+from twenty48.agents.random_agent import RandomAgent
+from twenty48.agents.expectimax import ExpectimaxAgent
 
 
-class Agent(Protocol):
-    name: str
-
-    def act(self, obs: np.ndarray, info: dict[str, Any] | None = None) -> int:
-        ...
-
-    def reset(self) -> None:
-        ...
-
-
-def get_agent(name: str, **kwargs: Any) -> Any:
-    from twenty48.agents.dqn_agent import DQNAgent
-    from twenty48.agents.expectimax import ExpectimaxAgent
-    from twenty48.agents.heuristic import HeuristicAgent
-    from twenty48.agents.random_agent import RandomAgent
-
+def get_agent(name: str, **kwargs):
     key = name.lower().replace("-", "_")
     if key in ("random",):
         return RandomAgent(**kwargs)
@@ -31,5 +12,15 @@ def get_agent(name: str, **kwargs: Any) -> Any:
     if key in ("expectimax", "expecti"):
         return ExpectimaxAgent(**kwargs)
     if key in ("dqn",):
+        from twenty48.agents.dqn_agent import DQNAgent
+
         return DQNAgent(**kwargs)
     raise ValueError(f"Unknown agent: {name}")
+
+
+__all__ = [
+    "get_agent",
+    "RandomAgent",
+    "HeuristicAgent",
+    "ExpectimaxAgent",
+]
