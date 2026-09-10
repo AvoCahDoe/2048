@@ -112,7 +112,7 @@ Even short DQN runs beat random (~894) and approach heuristic play with longer t
 
 | Surface | URL |
 | ------- | --- |
-| Frontend (Vercel) | https://front-end-gules-five.vercel.app |
+| Frontend (Vercel) | https://2048-rl.vercel.app |
 | Frontend (Render static) | https://twenty48-lab.onrender.com |
 | API (Render) | https://twenty48-api.onrender.com |
 
